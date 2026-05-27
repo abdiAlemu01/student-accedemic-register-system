@@ -4,10 +4,12 @@ const { Pool } = require('pg');
 const pool = process.env.DATABASE_URL 
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: {
+        rejectUnauthorized: false // Required for Supabase and most cloud PostgreSQL
+      },
       max: 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      connectionTimeoutMillis: 10000, // Increased timeout for cloud databases
     })
   : new Pool({
       host:     process.env.DB_HOST     || 'localhost',
